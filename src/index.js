@@ -5,9 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './store';
+import { productFetch } from './store/slices/productSlice';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+store.dispatch(productFetch())
 root.render(
   <Provider store={store}>
     <App />

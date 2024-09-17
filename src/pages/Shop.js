@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCartProducts,removeCartProducts } from "../store/slices/UserSlice";
+import { addCartProducts,removeCartProducts,setCartValues } from "../store/slices/UserSlice";
 
 const Shop=()=>{
 
@@ -22,7 +22,9 @@ const Shop=()=>{
     ]
     );
 
-    const [cartValues,setCartValues]=useState([])
+    // const [cartValues,setCartValues]=useState([])
+
+    setCartValues(productData)
 
     console.log("data----------",data)
 

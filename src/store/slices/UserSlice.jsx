@@ -3,11 +3,15 @@ import { act } from "react";
 
 const userSlice=createSlice({
     name:"users",
-    initialState:[],
+    initialState:{
+        creamData: [],
+    },
     reducers:{
+        setCartValues(state,action){
+            state['creamData'] = action.payload?.res
+        }, 
         addCartProducts(state,action){
             state.push(action.payload)
-            console.log("action-------",action.payload)
         },
         removeCartProducts(state,action){
             state.splice(0,1)
@@ -17,8 +21,8 @@ const userSlice=createSlice({
     },
 });
 
-console.log(userSlice.actions)
+// console.log(userSlice.actions)
 
-export const {addCartProducts,removeCartProducts}=userSlice.actions;
+export const {addCartProducts,removeCartProducts,setCartValues}=userSlice.actions;
 
 export default userSlice.reducer;
