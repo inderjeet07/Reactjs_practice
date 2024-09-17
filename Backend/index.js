@@ -12,6 +12,7 @@ app.get("/",(req,res)=>{
     res.send("welcome to our online shop api")
 })
 
+
 app.get("/products",(req,res)=>{
     res.send(products)
 })
