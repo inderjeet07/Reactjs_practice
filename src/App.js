@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from './pages/Home';
 import Layout from './pages/Layout';
 import Shop from './pages/Shop';
+import ViewCart from './pages/ViewCart';
 function App() {
   return (
     
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="shop" element={<Shop />} />
+          <Route path="viewcart" element={<ViewCart />} />
           {/* <Route path="blogs" element={<Blogs />} />
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NoPage />} /> */}
