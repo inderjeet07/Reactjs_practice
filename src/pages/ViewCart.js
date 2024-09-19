@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { getAllProductApi } from "../store/slices/productsSlices";
 
 const CartPageStyle = styled.div`
     table {
@@ -24,6 +26,17 @@ const CartPageStyle = styled.div`
 `;
 
 const ViewCart = () => {
+    const cartProducts=JSON.parse(localStorage.getItem('cartProducts'))??"";
+
+    useEffect(() => {
+        dispatch(getAllProductApi(productData));
+    }, []);
+    const allProducts = useSelector(state => state.productsSlices.allProducts);
+
+    console.log("all_products_products",allProducts)
+
+    // const state = useSelector(state => state);
+    // console.log("state",state);
     return (
         <CartPageStyle>
             <div className="main-view-cart-section">
@@ -39,18 +52,22 @@ const ViewCart = () => {
                             </tr>
                         </thead>
                         <tbody>
+                         {cartProducts.map((obj)=>(                     
                             <tr>
                                 <td><img src="https://images.unsplash.com/photo-1578262825743-a4e402caab76" alt="Nike Air" /></td>
                                 <td>Dummy Name</td>
                                 <td>$54.64</td>
-                                <td>2</td>
+                                <td>{obj.qty}</td>
                             </tr>
-                            <tr>
+
+                          ))
+                         }
+                            {/* <tr>
                                 <td><img src="https://images.unsplash.com/photo-1578262825743-a4e402caab76?ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1051&amp;q=80" alt="Nike Air" /></td>
                                 <td>Dummy Name</td>
                                 <td>$54.64</td>
                                 <td>2</td>
-                            </tr>
+                            </tr> */}
                         </tbody>
                     </table>
                 </div>

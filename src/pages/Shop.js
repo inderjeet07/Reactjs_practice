@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addCartProducts,removeCartProducts,setCartValues } from "../store/slices/UserSlice";
 import { compose } from "@reduxjs/toolkit";
 import styled from "styled-components";
+import { getAllProductApi } from "../store/slices/productsSlices";
 const ShopPageStyle = styled.div`
   font-size: 20px;
   color: black;
@@ -22,16 +23,12 @@ const ShopPageStyle = styled.div`
 }
 `;
 const Shop=()=>{
-
-  
   const dispatch=useDispatch();
 
   const data=useSelector((state)=>{
     return state.users;
   })
   
-  console.log("dataaaaaaaaaa",data)
-
     const [productData,setProductData]=useState(
        [{
         'id':123,'name':'product1','price':20
@@ -47,8 +44,6 @@ const Shop=()=>{
   );
    var already_cartvalue=JSON.parse(localStorage.getItem('cartProducts'))??[];
 
-    console.log("already_cartvalue",already_cartvalue)
-
     const [cartValues,setCartValuess]=useState(already_cartvalue);
 
 
@@ -59,27 +54,16 @@ const Shop=()=>{
       localStorage.setItem('cartProducts',JSON.stringify(cartValues));
 
       }
-      // if(
-    
-
-
     },[cartValues])
 
     setCartValues(productData);
 
-    console.log("cartValues",cartValues);
-
     const _addtocart=(id)=>{
-
-      console.log("inside_The_method")
-      // dispatch(addCartProducts(id))
 
         const productInfo = {
             id:id,
             qty:1
           };
-          // setCartValuess(...cartValues,productInfo)
-
           let already_exist_value;
 
           if(cartValues){
@@ -118,6 +102,16 @@ const Shop=()=>{
       dispatch(removeCartProducts(id))
     }
 
+   useEffect(() => {
+          dispatch(getAllProductApi(productData));
+  }, []);
+
+  const state = useSelector(state => state);
+  console.log(state);
+
+  const allProducts = useSelector(state => state.productss.allProducts);
+
+  console.log("allProducts,allProducts",allProducts);
 
 
    
