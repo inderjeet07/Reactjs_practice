@@ -1,8 +1,10 @@
+"use client"
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { getAllProductApi } from "../store/slices/productsSlices";
-
+import { useEffect,useState } from "react";
+import { useDispatch } from "react-redux";
 const CartPageStyle = styled.div`
     table {
         width: 100%;
@@ -27,11 +29,26 @@ const CartPageStyle = styled.div`
 
 const ViewCart = () => {
     const cartProducts=JSON.parse(localStorage.getItem('cartProducts'))??"";
+   const dispatch=useDispatch();
+
+   const [productData,setProductData]=useState(
+    [{
+     'id':123,'name':'product1','price':20
+    },
+    {
+     'id':234,'name':'product2','price':50
+    },
+    {
+     'id':567,'name':'product3','price':544
+    }
+ ]
+
+);
 
     useEffect(() => {
         dispatch(getAllProductApi(productData));
     }, []);
-    const allProducts = useSelector(state => state.productsSlices.allProducts);
+    const allProducts = useSelector(state => state?.productsSlices?.allProducts);
 
     console.log("all_products_products",allProducts)
 
