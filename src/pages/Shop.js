@@ -4,6 +4,9 @@ import { addCartProducts,removeCartProducts,setCartValues } from "../store/slice
 import { compose } from "@reduxjs/toolkit";
 import styled from "styled-components";
 import { getAllProductApi } from "../store/slices/productsSlices";
+import { setTotalQty,removeCartProductss } from "../store/slices/productsSlices";
+
+
 const ShopPageStyle = styled.div`
   font-size: 20px;
   color: black;
@@ -42,10 +45,26 @@ const Shop=()=>{
     ]
   
   );
-   var already_cartvalue=JSON.parse(localStorage.getItem('cartProducts'))??[];
+  let already_cartvalue=[];
+
+    already_cartvalue=JSON.parse(localStorage.getItem('cartProducts'))||[];
 
     const [cartValues,setCartValuess]=useState(already_cartvalue);
 
+
+
+  useEffect(() => {
+    console.log("insdie_thissssssssss")
+    if(cartValues.length>0){
+  const totalQuantity = cartValues.reduce((acc, obj) => {
+      return acc + obj.qty;
+  }, 0);
+  dispatch(setTotalQty({ res: totalQuantity }));
+    }
+}, [cartValues]); //
+
+
+console.log("cartValues",cartValues)
 
     useEffect(()=>{
 
@@ -68,7 +87,7 @@ const Shop=()=>{
 
           if(cartValues){
 
-           already_exist_value = cartValues?.filter(obj => obj?.id == id);
+           already_exist_value = cartValues?.filter((obj) => obj?.id == id);
 
 
           }
@@ -98,23 +117,50 @@ const Shop=()=>{
         // }
     }
 
-    const _deleteCart=(id)=>{
-      dispatch(removeCartProducts(id))
-    }
+    const _deleteCart = (id) => {
+      // Assuming cartValues is mutable, you can modify it directly
+      const existingItemIndex = cartValues.findIndex(obj => obj.id === id);
+  
+      console.log("existingItemIndex", existingItemIndex);
+  
+      if (existingItemIndex !== -1) {
+          // Remove one item at the found index
+          cartValues.splice(existingItemIndex, 1);
+          console.log("Item removed. Updated cartValues:", cartValues);
+
+          // setCartValues([...cartValues]); // To trigger a re-render
+
+                  // Update localStorage with the new cartValues
+                  localStorage.setItem('cartProducts', JSON.stringify(cartValues));
+
+                  setCartValuess(cartValues)
+
+                  // if(cartValues.length>0){
+                    console.log("insdie_the_carvalsfljslf")
+                    const totalQuantity = cartValues.reduce((acc, obj) => {
+                        return acc + obj.qty;
+                    }, 0);
+                    dispatch(setTotalQty({ res: totalQuantity }));
+                      // }
+        
+        console.log("Item removed. Updated cartValues:", cartValues);
+
+
+          // localStorage.setItem('cartProducts',JSON.stringify(...cartValues));
+
+
+
+      } else {
+          console.log("Item not found in cart.");
+      }
+  }
 
    useEffect(() => {
           dispatch(getAllProductApi(productData));
   }, []);
 
   const state = useSelector(state => state);
-  console.log(state);
 
-  const allProducts = useSelector(state => state.productss.allProducts);
-
-  console.log("allProducts,allProducts",allProducts);
-
-
-   
     return(
         <>
       <ShopPageStyle>
@@ -131,8 +177,10 @@ const Shop=()=>{
               <span><button className="bg-midnight hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={()=>_addtocart(obj.id)}
               >Add to cart</button></span>
-              <span>
+              <span>{console.log("cartValues.filter(objs=>objs.id===obj.id)",cartValues.filter(objs=>objs.id===obj.id).length)}
+                {cartValues.filter(objs=>objs.id===obj.id).length>0&&
                 <button className="bg-midnight hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={()=>_deleteCart(obj.id)}>Remove</button>
+}
               </span>
             </div>
 

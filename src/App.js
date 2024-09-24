@@ -7,6 +7,7 @@ import Layout from './pages/Layout';
 import Shop from './pages/Shop';
 import ViewCart from './pages/ViewCart';
 function App() {
+
   return (
     
     <div className="App">
@@ -16,9 +17,6 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="shop" element={<Shop />} />
           <Route path="viewcart" element={<ViewCart />} />
-          {/* <Route path="blogs" element={<Blogs />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="*" element={<NoPage />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>

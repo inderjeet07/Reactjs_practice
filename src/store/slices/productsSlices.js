@@ -4,17 +4,25 @@ const productsSlices=createSlice({
     name:"productss",
     initialState:{
         allProducts:[],
+        totalQty:[]
     },
     reducers:{
         setAllProducts(state,action){
             state.allProducts = action.payload.res; // Make sure action.payload.res is an array
-            console.log("action.payload.res---------",action.payload.res,"state.allProducts",state.allProducts)
+        },
+        setTotalQty(state,action){
+            state.totalQty = action.payload.res;
+        },
+        removeCartProductss(state,action){
+            state.splice(0,1)
+            console.log("action_pu;sjfsf",action.payload)
         }
+
     }
 })
 
 
-export const { setAllProducts } = productsSlices.actions;
+export const { setAllProducts,setTotalQty,removeCartProductss } = productsSlices.actions;
 
   export const getAllProductApi = (res,section = "allProduct") => dispatch => {
     console.log("inside_the_api")

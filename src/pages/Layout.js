@@ -1,7 +1,14 @@
 import { Outlet, Link } from "react-router-dom";
 // import 'font-awesome/css/font-awesome.min.css';
+import CartIcon from "../components/CartIcon";
+import { useState,useEffect } from "react";
+import { setTotalQty } from "../store/slices/productsSlices";
+import { useDispatch, useSelector } from "react-redux";
 
 const Layout = () => {
+
+  const totalQty = useSelector(state => state.productss.totalQty);
+
   return (
     <>
       <nav>
@@ -10,23 +17,14 @@ const Layout = () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/blogs">Blogs</Link>
+            <Link to="/shop">Shop</Link>
           </li>
           <li>
             <Link to="/contact">Contact</Link>
           </li>
           <li>
-          <div className="cart-icon">
-      <img src="https://cdn-icons-png.flaticon.com/128/3144/3144456.png" alt="Cart" style={{ width: '24px', height: 'auto' }} />
-      {/* {itemCount > 0 && ( */}
-        <span className="badge badge-warning" id="lblCartCount">
-          {0}
-        </span>
-      {/* )} */}
-    </div>
-      {/* )} */}
-      </li>
-
+            <Link to="/viewcart"><CartIcon totalQty={totalQty}/></Link>
+          </li>
         </ul>
       </nav>
 
