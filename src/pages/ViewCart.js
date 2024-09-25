@@ -25,11 +25,30 @@ const CartPageStyle = styled.div`
     td {
         border: 1px solid #ddd; /* Optional: border for table cells */
     }
+
+    button.increase_button {
+    padding: -3px;
+    border: 2px solid;
+    width: 8%;
+    height: 6%;
+    background: green;
+    color: white;
+}
+     button.decrease_button {
+    padding: -3px;
+    border: 2px solid;
+    width: 8%;
+    height: 6%;
+    background: red;
+    color: white;
+}
 `;
 
 const ViewCart = () => {
+
     const cartProducts=JSON.parse(localStorage.getItem('cartProducts'))??"";
-   const dispatch=useDispatch();
+
+   const dispatch = useDispatch();
 
    const [productData,setProductData]=useState(
     [{
@@ -51,6 +70,13 @@ const ViewCart = () => {
     const allProducts = useSelector(state => state?.productsSlices?.allProducts);
 
     console.log("all_products_products",allProducts)
+
+    function increase(id,qty){
+        console.log("id==========",id,"qty########################",qty)
+    }
+    function decrease(id,qty){
+        console.log("id==========",id,"qty########################",qty)
+    }
 
     // const state = useSelector(state => state);
     // console.log("state",state);
@@ -74,7 +100,10 @@ const ViewCart = () => {
                                 <td><img src="https://images.unsplash.com/photo-1578262825743-a4e402caab76" alt="Nike Air" /></td>
                                 <td>Dummy Name</td>
                                 <td>$54.64</td>
-                                <td>{obj.qty}</td>
+                                <td>
+                                    <button className="decrease_button" onClick={()=>decrease(obj.id,obj.qty)}>-</button>
+                                     <input type="text" value={obj.qty} style={{border:"2px solid",width:"10%",textAlign:"center"}}/>
+                                    <button onClick={()=>increase(obj.id,obj.qty)} className="increase_button">+</button></td>
                             </tr>
 
                           ))

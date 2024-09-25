@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCartProducts,removeCartProducts,setCartValues } from "../store/slices/UserSlice";
+import { addCartProducts,removeCartProducts } from "../store/slices/UserSlice";
 import { compose } from "@reduxjs/toolkit";
 import styled from "styled-components";
 import { getAllProductApi } from "../store/slices/productsSlices";
-import { setTotalQty,removeCartProductss } from "../store/slices/productsSlices";
+import { setTotalQty,removeCartProductss,setCartValuess } from "../store/slices/productsSlices";
 
 
 const ShopPageStyle = styled.div`
@@ -45,115 +45,67 @@ const Shop=()=>{
     ]
   
   );
-  let already_cartvalue=[];
+  const cartValues = useSelector(state => state.productss.cartValues);
 
-    already_cartvalue=JSON.parse(localStorage.getItem('cartProducts'))||[];
-
-    const [cartValues,setCartValuess]=useState(already_cartvalue);
-
-
-
+  // Load existing cart values from local storage
   useEffect(() => {
-    console.log("insdie_thissssssssss")
-    if(cartValues.length>0){
-  const totalQuantity = cartValues.reduce((acc, obj) => {
-      return acc + obj.qty;
-  }, 0);
-  dispatch(setTotalQty({ res: totalQuantity }));
-    }
-}, [cartValues]); //
-
-
-console.log("cartValues",cartValues)
-
-    useEffect(()=>{
-
-      if(cartValues.length>0){
-
-      localStorage.setItem('cartProducts',JSON.stringify(cartValues));
-
+      const already_cartvalue = JSON.parse(localStorage.getItem('cartProducts')) || [];
+      if (already_cartvalue.length > 0) {
+          dispatch(setCartValuess({ res: already_cartvalue }));
       }
-    },[cartValues])
+  }, [dispatch]);
 
-    setCartValues(productData);
-
-    const _addtocart=(id)=>{
-
-        const productInfo = {
-            id:id,
-            qty:1
-          };
-          let already_exist_value;
-
-          if(cartValues){
-
-           already_exist_value = cartValues?.filter((obj) => obj?.id == id);
-
-
-          }
-
-          if(already_exist_value.length>0){
-            const existingItemIndex = cartValues.findIndex(obj => obj.id === id);
-            // if (existingItemIndex !== -1) {
-              // If the item exists, update its quantity
-              setCartValuess(prevData => {
-                  const updatedCart = [...prevData];
-                  updatedCart[existingItemIndex].qty += 1; // Increase the quantity
-                  return updatedCart;
-              });
-          // }
-        }else{
-
-          setCartValuess(prevData=>[...prevData,productInfo]);
-          }
-       
-          // if(cartValues.length>0){
-          //   localStorage.setItem('cartProducts',JSON.stringify(cartValues));
-
-          // }
-        // if (id) {
-        //     // Add the new item to the existing cartValues array
-        //     dispatch(addCartProducts(productInfo));
-        // }
-    }
-
-    const _deleteCart = (id) => {
-      // Assuming cartValues is mutable, you can modify it directly
-      const existingItemIndex = cartValues.findIndex(obj => obj.id === id);
-  
-      console.log("existingItemIndex", existingItemIndex);
-  
-      if (existingItemIndex !== -1) {
-          // Remove one item at the found index
-          cartValues.splice(existingItemIndex, 1);
-          console.log("Item removed. Updated cartValues:", cartValues);
-
-          // setCartValues([...cartValues]); // To trigger a re-render
-
-                  // Update localStorage with the new cartValues
-                  localStorage.setItem('cartProducts', JSON.stringify(cartValues));
-
-                  setCartValuess(cartValues)
-
-                  // if(cartValues.length>0){
-                    console.log("insdie_the_carvalsfljslf")
-                    const totalQuantity = cartValues.reduce((acc, obj) => {
-                        return acc + obj.qty;
-                    }, 0);
-                    dispatch(setTotalQty({ res: totalQuantity }));
-                      // }
-        
-        console.log("Item removed. Updated cartValues:", cartValues);
-
-
-          // localStorage.setItem('cartProducts',JSON.stringify(...cartValues));
-
-
-
+  // Update total quantity and sync with local storage
+  useEffect(() => {
+      if (cartValues.length > 0) {
+          const totalQuantity = cartValues.reduce((acc, obj) => acc + obj.qty, 0);
+          dispatch(setTotalQty({ res: totalQuantity }));
+          localStorage.setItem('cartProducts', JSON.stringify(cartValues)); // Sync localStorage
       } else {
-          console.log("Item not found in cart.");
+          localStorage.removeItem('cartProducts'); // Clear if cart is empty
       }
-  }
+  }, [cartValues, dispatch]);
+
+  const _addtocart = (id) => {
+      const productInfo = { id: id, qty: 1 };
+      const existingItemIndex = cartValues.findIndex(obj => obj.id === id);
+
+      if (existingItemIndex !== -1) {
+          const updatedCart = cartValues.map((item, index) => 
+              index === existingItemIndex ? { ...item, qty: item.qty + 1 } : item
+          );
+          dispatch(setCartValuess({ res: updatedCart }));
+      } else {
+          const updatedCart = [...cartValues, productInfo];
+          dispatch(setCartValuess({ res: updatedCart }));
+      }
+  };
+
+  const _deleteCart = (id) => {
+    const existingItemIndex = cartValues.findIndex(obj => obj.id === id);
+
+    if (existingItemIndex !== -1) {
+        // Create a new array without the item
+        const updatedCartValues = cartValues.filter(obj => obj.id !== id);
+
+        // Update local storage
+        localStorage.setItem('cartProducts', JSON.stringify(updatedCartValues));
+
+        // Update state
+        setCartValuess(updatedCartValues);
+
+        // Calculate total quantity
+        const totalQuantity = updatedCartValues.reduce((acc, obj) => {
+            return acc + obj.qty;
+        }, 0);
+
+        // Dispatch total quantity
+        dispatch(setTotalQty({ res: totalQuantity }));
+    } else {
+        console.log("Item not found in cart.");
+    }
+}
+
 
    useEffect(() => {
           dispatch(getAllProductApi(productData));
