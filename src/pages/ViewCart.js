@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { getAllProductApi } from "../store/slices/productsSlices";
 import { useEffect,useState } from "react";
 import { useDispatch } from "react-redux";
+import { increase, decrease } from "../Methods/normalMethods";
 const CartPageStyle = styled.div`
     table {
         width: 100%;
@@ -46,7 +47,9 @@ const CartPageStyle = styled.div`
 
 const ViewCart = () => {
 
-    const cartProducts=JSON.parse(localStorage.getItem('cartProducts'))??"";
+    const cartProducts=JSON.parse(localStorage.getItem('cartValues'))||"";
+
+    const cartValues = useSelector(state => state.productss.cartValues);
 
    const dispatch = useDispatch();
 
@@ -66,25 +69,36 @@ const ViewCart = () => {
 
     useEffect(() => {
         dispatch(getAllProductApi(productData));
+        // console.log("inside_the_useeffercet_function")
     }, []);
-    const allProducts = useSelector(state => state?.productsSlices?.allProducts);
+    // const allProducts = useSelector(state => state?.productsSlices?.allProducts);
 
-    console.log("all_products_products",allProducts)
+    const allProducts = useSelector(state => state.productss.allProducts);
 
-    function increase(id,qty){
-        console.log("id==========",id,"qty########################",qty)
-    }
-    function decrease(id,qty){
-        console.log("id==========",id,"qty########################",qty)
-    }
+     console.log("allProducts.filter((prod)=>prod.id===123",allProducts)
 
-    // const state = useSelector(state => state);
-    // console.log("state",state);
+     var total_prices=cartValues.map((values)=>(
+
+(productData.filter((prod)=>prod.id===values.id)[0].price)*(values.qty)
+
+     ))
+
+     var total_price = total_prices.reduce((acc,cur)=>{
+        return acc+cur
+     },0)
+
+     console.log("total_price==========",total_price)
+
+
+
     return (
         <CartPageStyle>
             <div className="main-view-cart-section">
+            {cartValues.length>0 ?
+            <>
                 <div className="products-details-section">
                     <h1>Product details</h1>
+                   
                     <table>
                         <thead>
                             <tr>
@@ -92,18 +106,22 @@ const ViewCart = () => {
                                 <th>Product Name</th>
                                 <th>Product Price</th>
                                 <th>Product qty</th>
+                                <th>Total price</th>
                             </tr>
+                            
                         </thead>
                         <tbody>
-                         {cartProducts.map((obj)=>(                     
+                         {cartValues.map((obj)=>(     
+                        
                             <tr>
                                 <td><img src="https://images.unsplash.com/photo-1578262825743-a4e402caab76" alt="Nike Air" /></td>
-                                <td>Dummy Name</td>
-                                <td>$54.64</td>
+                                <td>{(productData.filter((prod)=>prod.id===obj.id)[0].name)}</td>
+                                <td>${(productData.filter((prod)=>prod.id===obj.id)[0].price)}</td>
                                 <td>
-                                    <button className="decrease_button" onClick={()=>decrease(obj.id,obj.qty)}>-</button>
+                                    <button className="decrease_button" onClick={()=>decrease(obj.id,cartValues,dispatch)}>-</button>
                                      <input type="text" value={obj.qty} style={{border:"2px solid",width:"10%",textAlign:"center"}}/>
-                                    <button onClick={()=>increase(obj.id,obj.qty)} className="increase_button">+</button></td>
+                                    <button onClick={()=>increase(obj.id,cartValues,dispatch)} className="increase_button">+</button></td>
+                                <td>${(productData.filter((prod)=>prod.id===obj.id)[0].price)*(obj.qty)}</td>
                             </tr>
 
                           ))
@@ -114,9 +132,18 @@ const ViewCart = () => {
                                 <td>$54.64</td>
                                 <td>2</td>
                             </tr> */}
+                            
+
                         </tbody>
                     </table>
                 </div>
+                <div className="total-price">
+                            <span>Total:${total_price}</span>
+                            <button>Checkout</button>
+                 </div>
+                 </>
+                 :"No Products avable"}
+                        
             </div>
         </CartPageStyle>
     );
