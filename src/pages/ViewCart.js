@@ -75,8 +75,6 @@ const ViewCart = () => {
 
     const allProducts = useSelector(state => state.productss.allProducts);
 
-     console.log("allProducts.filter((prod)=>prod.id===123",allProducts)
-
      var total_prices=cartValues.map((values)=>(
 
 (productData.filter((prod)=>prod.id===values.id)[0].price)*(values.qty)
@@ -86,10 +84,6 @@ const ViewCart = () => {
      var total_price = total_prices.reduce((acc,cur)=>{
         return acc+cur
      },0)
-
-     console.log("total_price==========",total_price)
-
-
 
     return (
         <CartPageStyle>
