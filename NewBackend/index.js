@@ -2,9 +2,43 @@ const http=require("http");
 const fs= require("fs");
 const url=require("url");
 const { log } = require("console");
+const mongoose = require("mongoose");
 const express=require('express');
+const { type } = require("os");
+const { stringify } = require("querystring");
 
 const app = express();
+
+// mongoose.connection
+mongoose.connect('mongodb://127.0.0.1:27017/youtube-app-1')
+.then(()=>console.log('Mongodb connected'))
+.catch(err=>console.log("this is the error ",err))
+
+//Schema
+
+const userSchema= new mongoose.Schema({
+    firstName:{
+        type:String,
+        required:true
+    },
+    lastName:{
+        type:String
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    jobTitle:{
+        type:String
+    },
+    gender:{
+        type:String
+    }
+
+})
+
+const User = mongoose.model('user',userSchema)
 
 app.get('/',(req,res)=>{
 
