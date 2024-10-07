@@ -3,13 +3,15 @@ const express=require("express");
 const router = express.Router();
 
 const {handleGetAllUserDetails,handleCreateNewUser,handleGetUserById,
-    handleUpdateUserById,handleDeleteUserById} = require("../controllers/user")
+    handleUpdateUserById,handleDeleteUserById,handleLoginUser} = require("../controllers/user")
 
 const {User} = require("../models/user")
 
 router.route("/")
 .get(handleGetAllUserDetails)
 .post(handleCreateNewUser);
+
+router.route("/login").post(handleLoginUser)
 
 router.route("/:id")
 .get(handleGetUserById)

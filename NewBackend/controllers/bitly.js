@@ -11,9 +11,13 @@ async function handleGenerateLink(req,res) {
     const newId = shortid.generate();
 
       const insert_data = await LinkModel.create( {  UserLink: req.body.url,
-        RedirectionId:newId, } )
+        RedirectionId:newId, createdBy:req.user._id} );
 
-      res.json(`URL is : ${"http://localhost:"+8000+"/"+newId}`)
+      res.render('home',{
+        id:newId
+      })
+
+    //   res.json(`URL is : ${"http://localhost:"+8004+"/bitly"+newId}`)
     
 }
 

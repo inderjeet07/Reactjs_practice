@@ -1,4 +1,8 @@
-const {User} = require("../models/user")
+const {User} = require("../models/user");
+
+const {v4:uuidv4} =require("uuid");
+
+const {setUser} = require('../service/auth')
 
 async function handleGetAllUserDetails(req,res) {
 
@@ -19,10 +23,34 @@ async function handleCreateNewUser(req,res) {
      firstName:body_response.firstName,
      lastName:body_response.lastName,
      email:body_response.email,
-     jobTitle:body_response.jobTitle
+     password:body_response.password,
+     jobTitle:body_response.jobTitle,
+    //  createdBy: req.user._id,
     });
+     res.render("home");
     // console.log("resuluttt",result)
-    return res.status(201).json({msg:"succcess"});
+    // return res.status(201).json({msg:"succcess"});
+    
+}
+
+async function handleLoginUser(req,res) {
+
+    const {email,password}=req.body;
+
+    const user = await User.findOne({email,password});
+
+    if(!user) res.render("login",{
+            error:"email and password is not find"
+        });
+
+    const sessionId = uuidv4();
+
+    setUser(sessionId,user);
+
+    res.cookie("uid",sessionId);
+
+    return res.redirect("/")
+
     
 }
 
@@ -64,5 +92,6 @@ module.exports={
     handleCreateNewUser,
     handleGetUserById,
     handleUpdateUserById,
-    handleDeleteUserById
+    handleDeleteUserById,
+    handleLoginUser
 }
