@@ -43,13 +43,17 @@ async function handleLoginUser(req,res) {
             error:"email and password is not find"
         });
 
-    const sessionId = uuidv4();
+    // const sessionId = uuidv4();
 
-    setUser(sessionId,user);
+    console.log("user--------",user)
 
-    res.cookie("uid",sessionId);
+    const token = setUser(user);
 
-    return res.redirect("/")
+    // res.cookie("uid",token);
+
+    return res.json({token})
+
+    // return res.redirect("/")
 
     
 }
